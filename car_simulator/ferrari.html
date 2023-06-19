@@ -65,6 +65,8 @@
 
 			const wheels = [];
 
+			let speed = 0;
+
 			function init() {
 
 				const container = document.getElementById( 'container' );
@@ -78,6 +80,13 @@
 				container.appendChild( renderer.domElement );
 
 				window.addEventListener( 'resize', onWindowResize );
+
+				window.addEventListener("message", function(e){
+					if(!e.data) return
+					console.log(e.data)
+					let payload = JSON.parse(e.data)
+					speed = payload.speed || 0
+				}, false);
 
 				stats = new Stats();
 				container.appendChild( stats.dom );
@@ -201,15 +210,17 @@
 
 				controls.update();
 
-				const time = - performance.now() / 1000;
+				if(speed>0) {
+					const time = - performance.now() / (3000/speed);
 
-				for ( let i = 0; i < wheels.length; i ++ ) {
+					for ( let i = 0; i < wheels.length; i ++ ) {
 
-					wheels[ i ].rotation.x = time * Math.PI * 2;
+						wheels[ i ].rotation.x = time * Math.PI * 2;
 
+					}
+
+					grid.position.z = - ( time ) % 1;
 				}
-
-				grid.position.z = - ( time ) % 1;
 
 				renderer.render( scene, camera );
 
