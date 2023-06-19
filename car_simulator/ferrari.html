@@ -83,7 +83,7 @@
 
 				window.addEventListener("message", function(e){
 					if(!e.data) return
-					console.log(e.data)
+					// console.log(e.data)
 					let payload = JSON.parse(e.data)
 					speed = payload.speed || 0
 				}, false);
