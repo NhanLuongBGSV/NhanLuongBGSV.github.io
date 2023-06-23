@@ -163,6 +163,10 @@
 
 					const carModel = gltf.scene.children[ 0 ];
 
+					carModel.traverse( function( object ) {
+						if ( object.isMesh ) console.log( object.name );
+					} );
+
 					carModel.getObjectByName( 'body' ).material = bodyMaterial;
 
 					carModel.getObjectByName( 'rim_fl' ).material = detailsMaterial;

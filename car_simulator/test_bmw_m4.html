@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wiper</title>
+</head>
+<body>
+    <div>
+        <iframe id="car" src=".\bmw_m4.html" frameborder="0" width="1024" height="468"></iframe>
+    </div>
+    <!-- <button id="btnStop">Stop</button>
+    <button id="btn1">2km/h</button>
+    <button id="btn2">20km/h</button>
+    <button id="btn3">100km/h</button> -->
+    <button id="btnOpenDriverDoor">Open Driver Door</button>
+    <button id="btnCloseDriverDoor">Close Driver Door</button>
+    <button id="btnExpandSeats">Expand Seat</button>
+    <button id="btnCloseSeats">Close Seat</button>
+    <button id="btnReset">Reset</button>
+
+</body>
+    <script>
+        let carView = document.getElementById('car')
+        carView.onload = function() {
+            let btnOpenDriverDoor = document.getElementById("btnOpenDriverDoor")
+            let btnCloseDriverDoor = document.getElementById("btnCloseDriverDoor")
+            btnOpenDriverDoor.addEventListener("click",function(e){
+                carView.contentWindow.postMessage(JSON.stringify({'cmd': "open_driver_door"}),"*")
+            })
+            btnCloseDriverDoor.addEventListener("click",function(e){
+                carView.contentWindow.postMessage(JSON.stringify({'cmd': "close_driver_door"}),"*")
+            })
+
+            let btnExpandSeats = document.getElementById("btnExpandSeats")
+            let btnCloseSeats = document.getElementById("btnCloseSeats")
+            btnExpandSeats.addEventListener("click",function(e){
+                carView.contentWindow.postMessage(JSON.stringify({'cmd': "expand_seats"}),"*")
+            })
+            btnCloseSeats.addEventListener("click",function(e){
+                carView.contentWindow.postMessage(JSON.stringify({'cmd': "close_seats"}),"*")
+            })
+
+            let btnReset = document.getElementById("btnReset")
+            btnReset.addEventListener("click",function(e){
+                carView.contentWindow.postMessage(JSON.stringify({'cmd': "reset"}),"*")
+            })
+
+            // let btnStop = document.getElementById("btnStop")
+            // let btn1 = document.getElementById("btn1")
+            // let btn2 = document.getElementById("btn2")
+            // let btn3 = document.getElementById("btn3")
+            // btnStop.addEventListener("click",function(e){
+            //     wiper.contentWindow.postMessage(JSON.stringify({'speed': 0}),"*")
+            // })
+            // btn1.addEventListener("click",function(e){
+            //     wiper.contentWindow.postMessage(JSON.stringify({'speed': 5}),"*")
+            // })
+            // btn2.addEventListener("click",function(e){
+            //     wiper.contentWindow.postMessage(JSON.stringify({'speed': 20}),"*")
+            // })
+            // btn3.addEventListener("click",function(e){
+            //     wiper.contentWindow.postMessage(JSON.stringify({'speed': 80}),"*")
+            // })
+        }
+    </script>
+</html>
