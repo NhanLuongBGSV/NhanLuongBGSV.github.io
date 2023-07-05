@@ -96,6 +96,11 @@
 				}
 			}, 100);
 
+			setInterval(() => {
+				if(!parent) return
+				parent.postMessage(JSON.stringify({ viewer: { cameraPosition: camera.position }}), '*')
+			}, 1000)
+
 			function setDriverDoorAngle(angle) {
 				driver_door_angle = angle
 			}
@@ -160,7 +165,7 @@
 					if(!e.data) return
 					// console.log(e.data)
 					let payload = JSON.parse(e.data)
-					console.log(payload.driver_door_angle)
+					// console.log(payload.driver_door_angle)
 					if(payload.driver_door_angle !== undefined) {
 						setDriverDoorAngle(Number(payload.driver_door_angle))
 					}

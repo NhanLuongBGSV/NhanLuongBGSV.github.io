@@ -23,6 +23,33 @@
 
 </body>
     <script>
+        let isNearCar = false;
+        window.addEventListener("message", function(e){
+            if(!e.data) return
+            // console.log(e.data)
+            // console.log("Message from child iframe")
+            let payload = JSON.parse(e.data)
+            if(payload.viewer){
+                // console.log(payload.viewer)
+                if(payload.viewer.cameraPosition.x != undefined) {
+                    let distanceToCar = Math.abs(payload.viewer.cameraPosition.x - 1.5)
+                        + Math.abs(payload.viewer.cameraPosition.y - 1.6)
+                        + Math.abs(payload.viewer.cameraPosition.z - (-0.2))
+                    // console.log('distanceToCar', distanceToCar)
+                    let newIsNearCar = distanceToCar < 15
+                    if(isNearCar != newIsNearCar) {
+                        isNearCar = newIsNearCar
+                        if(isNearCar) {
+                            carView.contentWindow.postMessage(JSON.stringify({'cmd': "open_driver_door"}),"*")
+                            setTimeout(() => {
+                                carView.contentWindow.postMessage(JSON.stringify({'cmd': "expand_seats"}),"*")
+                            }, 1000)
+                        }
+                    }
+                }
+            }
+        })
+
         let carView = document.getElementById('car')
         carView.onload = function() {
             let btnOpenDriverDoor = document.getElementById("btnOpenDriverDoor")
@@ -60,29 +87,6 @@
                 }),
                     "*")
             })
-
-            let isNearCar = false;
-
-            setInterval(() => {
-                if(carView.contentWindow.camera) {
-                    if(carView.contentWindow.camera.position.x != undefined) {
-                        let distanceToCar = Math.abs(carView.contentWindow.camera.position.x - 1.5)
-                            + Math.abs(carView.contentWindow.camera.position.y - 1.6)
-                            + Math.abs(carView.contentWindow.camera.position.z - (-0.2))
-                        // console.log('distanceToCar', distanceToCar)
-                        let newIsNearCar = distanceToCar < 15
-                        if(isNearCar != newIsNearCar) {
-                            isNearCar = newIsNearCar
-                            if(isNearCar) {
-                                carView.contentWindow.postMessage(JSON.stringify({'cmd': "open_driver_door"}),"*")
-                                setTimeout(() => {
-                                    carView.contentWindow.postMessage(JSON.stringify({'cmd': "expand_seats"}),"*")
-                                }, 1000)
-                            }
-                        }
-                    }
-                }
-            }, 100) 
 
         }
     </script>
