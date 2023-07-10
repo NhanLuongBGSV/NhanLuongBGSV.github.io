@@ -20,6 +20,8 @@
     <button id="btnCloseSeats">Close Seat</button>
     <button id="btnReset">Reset</button>
     <button id="btnMoveCamera">MoveCam</button>
+    <button id="btnMoveForward">Move Forward</button>
+    <button id="btnMoveBackward">Move Backward</button>
 
 </body>
     <script>
@@ -73,6 +75,22 @@
             let btnReset = document.getElementById("btnReset")
             btnReset.addEventListener("click",function(e){
                 carView.contentWindow.postMessage(JSON.stringify({'cmd': "reset"}),"*")
+            })
+
+            let btnMoveForward = document.getElementById("btnMoveForward")
+            btnMoveForward.addEventListener("click",function(e){
+                carView.contentWindow.postMessage(JSON.stringify({
+                    'cmd': "move_forward",
+                }),
+                    "*")
+            })
+
+            let btnMoveBackward = document.getElementById("btnMoveBackward")
+            btnMoveBackward.addEventListener("click",function(e){
+                carView.contentWindow.postMessage(JSON.stringify({
+                    'cmd': "move_backward",
+                }),
+                    "*")
             })
 
             let btnMoveCam = document.getElementById("btnMoveCamera")
