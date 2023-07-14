@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facial Detection</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script defer src="face-api.min.js"></script>
+  <script defer src="app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  <main class="w-[100vw] h-[100vh] grid place-items-center">
+    <div id="video-container" class="w-full h-full max-w-[800px] max-h-[600px] relative text-[13px] text-sky-600">
+      <div id="result" 
+        class="p-2 absolute left-2 top-24 z-10 rounded bg-white bg-opacity-50"></div>
+      <video id="video" autoplay muted 
+        class="w-full h-full absolute left-0 right-0 top-0 bottom-0 z-0"> </video>
+    </div>
+  </main>
+</body>
+
+</html>
