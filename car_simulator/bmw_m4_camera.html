@@ -20,6 +20,29 @@
 			display: inline-block;
 			margin: 0 10px
 		}
+
+		.smallBtn {
+			cursor: pointer;
+			width: 60px;
+			height: 22px;
+			background-color: #ABABABBB;
+			border-radius: 4px;
+			text-align: center;
+			font-size: 14px;
+			line-height: 20px;
+		}
+
+		.largeBtn {
+			display:inline-block;
+			cursor:pointer;
+			width:60px;
+			height:32px;
+			background-color: #ABABABBB;
+			border-radius:6px;
+			text-align:center;
+			font-size:14px;
+			line-height: 30px;
+		}
 	</style>
 </head>
 
@@ -37,20 +60,44 @@
 	</div>
 	<div id="container"></div>
 
-	<div style="color:white;user-select: none;position:fixed;z-index:9;bottom:4px;right:4px;padding:8px;display:inline-block;display: grid;grid-template-columns: repeat(2, 1fr);grid-gap: 4px;;background-color: #ffffff22;border-radius: 8px;;">
-		<div id="btnReset" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #ABABABBB;border-radius:6px;text-align:center;font-size:14px;line-height: 30px;">
-			Reset
+	<div
+		style="display:none;color:white;user-select: none;position:fixed;z-index:9;bottom:4px;left:4px;padding:8px;border-radius: 8px;">
+		<div id="positionState"></div>
+		<div style="display: grid;grid-template-columns: repeat(3, 1fr);grid-gap: 2px;">
+			<div class="smallBtn" id="posXInc">X+</div>
+			<div class="smallBtn" id="posYInc">Y+</div>
+			<div class="smallBtn" id="posZInc">Z+</div>
+			<div class="smallBtn" id="posXDec">X-</div>
+			<div class="smallBtn" id="posYDec">Y-</div>
+			<div class="smallBtn" id="posZDec">Z-</div>
 		</div>
-		<div id="btnForward" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #0088FFFF;border-radius:6px;text-align:center;font-size:24px;line-height: 30px;">
+		<div style="display: grid;grid-template-columns: repeat(3, 1fr);grid-gap: 2px;margin-top:10px;">
+			<div class="smallBtn" id="ctrlXInc">X+</div>
+			<div class="smallBtn" id="ctrlYInc">Y+</div>
+			<div class="smallBtn" id="ctrlZInc">Z+</div>
+			<div class="smallBtn" id="ctrlXDec">X-</div>
+			<div class="smallBtn" id="ctrlYDec">Y-</div>
+			<div class="smallBtn" id="ctrlZDec">Z-</div>
+		</div>
+	</div>
+
+	<div
+		style="color:white;user-select: none;position:fixed;z-index:9;bottom:4px;right:-20px;padding:8px;display:inline-block;display: grid;grid-template-columns: repeat(2, 1fr);grid-gap: 4px;;background-color: #ffffff00;border-radius: 8px;;">
+		<div id="btnReset" class="largeBtn" style="width:90px; font-size:12px;">
+			Reset View
+		</div>
+		<div id="btnForward" class="largeBtn"
+			style="background-color: #0088FFFF;">
 			▲
 		</div>
-		<div id="btnDriver" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #ABABABBB;border-radius:6px;text-align:center;font-size:14px;line-height: 30px;">
-			Driver
+		<div id="btnDriver" class="largeBtn" style="width:90px;font-size:12px;">
+			Driver View
 		</div>
 		<!-- <div id="btnLeft" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #0088FFFF;border-radius:6px;text-align:center;font-size:24px;line-height: 30px;">
 			◀
 		</div> -->
-		<div id="btnBackward" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #0088FFFF;border-radius:6px;text-align:center;font-size:24px;line-height: 30px;">
+		<div id="btnBackward" class="largeBtn"
+			style="background-color: #0088FFFF;">
 			▼
 		</div>
 		<!-- <div id="btnRight" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #0088FFFF;border-radius:6px;text-align:center;font-size:24px;line-height: 30px;">
@@ -73,6 +120,10 @@
 
 	<script type="module">
 
+		const round1Dec = (num) => {
+			return Math.round(num * 10) / 10
+		}
+
 		import * as THREE from 'three';
 
 		import Stats from 'three/addons/libs/stats.module.js';
@@ -88,6 +139,14 @@
 
 		let grid;
 		let controls;
+
+		let cameraX = 0;
+		let cameraY = 0;
+		let cameraZ = 0;
+
+		let controlX = 0;
+		let controlY = 0;
+		let controlZ = 0;
 
 		const wheels = [];
 
@@ -110,7 +169,8 @@
 			{ x: 2, y: 3, z: -2.2 },
 		]
 
-		let initPositions = { x: 25, y: 2.5, z: -16 }
+		let initPositions = { x: 25, y: 2, z: -16 }
+		let driver_poisition = { x: 0.3, y: 1.6, z: -0.25 }
 
 		setInterval(() => {
 			if (!camera) return
@@ -155,11 +215,74 @@
 			camera.position.set(initPositions.x, initPositions.y, initPositions.z);
 			seats_position = SEATS_MIN
 			driver_door_angle = DRIVER_DOOR_ANGLE_CLOSE
+			controls.target.set(0, 0.5, 0);
 		}
 
 		const setInsideView = () => {
-			camera.position.set(0, 3, 5);
+			// camera.position.set(0.3, 1.6,-0.25);
+			camera.position.set(driver_poisition.x, driver_poisition.y, driver_poisition.z);
+			controls.target.set(0.3, -6.4, 33.4);
+			// controls.setPolarAngle(Math.PI/2);
+			// controls.setAzimuthalAngle(Math.PI/5);/
 		}
+		let positionState = document.getElementById('positionState')
+		let posXInc = document.getElementById('posXInc')
+		let posXDec = document.getElementById('posXDec')
+		let posYInc = document.getElementById('posYInc')
+		let posYDec = document.getElementById('posYDec')
+		let posZInc = document.getElementById('posZInc')
+		let posZDec = document.getElementById('posZDec')
+
+		posXInc.addEventListener("click", function (e) {
+			camera.position.x += 0.2
+		})
+		posXDec.addEventListener("click", function (e) {
+			camera.position.x -= 0.2
+		})
+
+		posYInc.addEventListener("click", function (e) {
+			camera.position.y += 0.2
+		})
+		posYDec.addEventListener("click", function (e) {
+			camera.position.y -= 0.2
+		})
+
+		posZInc.addEventListener("click", function (e) {
+			camera.position.z += 0.2
+		})
+		posZDec.addEventListener("click", function (e) {
+			camera.position.z -= 0.2
+		})
+
+		let ctrlXInc = document.getElementById('ctrlXInc')
+		let ctrlXDec = document.getElementById('ctrlXDec')
+		let ctrlYInc = document.getElementById('ctrlYInc')
+		let ctrlYDec = document.getElementById('ctrlYDec')
+		let ctrlZInc = document.getElementById('ctrlZInc')
+		let ctrlZDec = document.getElementById('ctrlZDec')
+
+		ctrlXInc.addEventListener("click", function (e) {
+			controls.target.x += 0.2
+		})
+		ctrlXDec.addEventListener("click", function (e) {
+			controls.target.x -= 0.2
+		})
+
+		ctrlYInc.addEventListener("click", function (e) {
+			controls.target.y += 0.2
+		})
+		ctrlYDec.addEventListener("click", function (e) {
+			controls.target.y -= 0.2
+		})
+
+		ctrlZInc.addEventListener("click", function (e) {
+			controls.target.z += 0.2
+		})
+		ctrlZDec.addEventListener("click", function (e) {
+			controls.target.z -= 0.2
+		})
+
+
 
 		let btnReset = document.getElementById('btnReset');
 		let btnForward = document.getElementById('btnForward');
@@ -168,10 +291,10 @@
 		let btnBackward = document.getElementById('btnBackward');
 		// let btnRight = document.getElementById('btnRight');
 
-		btnReset.addEventListener("click",function(e){
+		btnReset.addEventListener("click", function (e) {
 			resetView()
 		})
-		btnDriver.addEventListener("click",function(e){
+		btnDriver.addEventListener("click", function (e) {
 			setInsideView()
 		})
 
@@ -195,46 +318,26 @@
 			}
 		}, 300);
 
-		btnForward.addEventListener("click",function(e){
+		btnForward.addEventListener("click", function (e) {
 			moveForward()
 		})
-		
-		btnForward.onpointerdown = function() {
-			isForwardPressed =  true;
+
+		btnForward.onpointerdown = function () {
+			isForwardPressed = true;
 		}
-		btnForward.onpointerup = function() {
-			isForwardPressed =  false;
+		btnForward.onpointerup = function () {
+			isForwardPressed = false;
 		}
 
-		btnBackward.addEventListener("click",function(e){
+		btnBackward.addEventListener("click", function (e) {
 			moveBackward()
 		})
-		btnBackward.onpointerdown = function() {
-			isBackardPressed =  true;
+		btnBackward.onpointerdown = function () {
+			isBackardPressed = true;
 		}
-		btnBackward.onpointerup = function() {
-			isBackardPressed =  false;
+		btnBackward.onpointerup = function () {
+			isBackardPressed = false;
 		}
-
-		// btnLeft.addEventListener("click",function(e){
-		// 	toLeft()
-		// })
-		// btnLeft.onpointerdown = function() {
-		// 	isBackardPressed =  true;
-		// }
-		// btnLeft.onpointerup = function() {
-		// 	isBackardPressed =  false;
-		// }
-
-		// btnRight.addEventListener("click",function(e){
-		// 	toRight()
-		// })
-		// btnRight.onpointerdown = function() {
-		// 	isRightPressed =  true;
-		// }
-		// btnRight.onpointerup = function() {
-		// 	isRightPressed =  false;
-		// }
 
 		function setDriverDoorAngle(angle) {
 			driver_door_angle = angle
@@ -356,7 +459,7 @@
 
 			//
 
-			let camFOV = 33 // angle
+			let camFOV = 48 // angle
 			let camAspectRatio = window.innerWidth / window.innerHeight
 			let canNEAR = 0.1
 			let camFAR = 100
@@ -385,32 +488,11 @@
 			grid.material.transparent = true;
 			scene.add(grid);
 
-			// cube
-			// const geometry = new THREE.BoxGeometry( 4, 4, 4 );
-			// const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-			// const cube = new THREE.Mesh( geometry, material );
-			// scene.add( cube );
-
-			// circle
-			// const curve = new THREE.EllipseCurve(
-  			// 0.0, 0.0,            // Center x, y
-			// 5.0, 5.0,          // x radius, y radius
-			// 0.0, 2.0 * Math.PI,  // Start angle, stop angle
-			// false,            // Clockwise
-			// 90.0                // Rotation
-			// );
-			// const pts = curve.getSpacedPoints(256);
-			// const geo = new THREE.BufferGeometry().setFromPoints(pts);
-			// const mat = new THREE.LineBasicMaterial({ color: "yellow" });
-			// geo.rotateX(Math.PI/2)
-			// const circle = new THREE.LineLoop(geo, mat);
-			// scene.add(circle);
-
-			const geometry = new THREE.TorusGeometry( 8, 0.1, 2, 100 );
-			const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
-			geometry.rotateX(Math.PI/2)
-			const torus = new THREE.Mesh( geometry, material );
-			scene.add( torus );
+			const geometry = new THREE.TorusGeometry(8, 0.1, 2, 100);
+			const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+			geometry.rotateX(Math.PI / 2)
+			const torus = new THREE.Mesh(geometry, material);
+			scene.add(torus);
 
 			// materials
 
@@ -507,6 +589,22 @@
 			renderer.render(scene, camera);
 
 			stats.update();
+
+			cameraX = camera.position.x;
+			cameraY = camera.position.y;
+			cameraZ = camera.position.z;
+
+			controlX = controls.target.x;
+			controlY = controls.target.y;
+			controlZ = controls.target.z;
+
+			let distanceToDriver = Math.abs(cameraX-driver_poisition.x)+Math.abs(cameraY-driver_poisition.y)+Math.abs(cameraZ-driver_poisition.z)
+
+			if(distanceToDriver < 3 && distanceToDriver>1) {
+				setInsideView()
+			}
+
+			positionState.innerText = `CAM: ${round1Dec(cameraX)} ${round1Dec(cameraY)} ${round1Dec(cameraZ)} | CONTROL: ${round1Dec(controlX)} ${round1Dec(controlY)} ${round1Dec(controlZ)}`
 
 		}
 
