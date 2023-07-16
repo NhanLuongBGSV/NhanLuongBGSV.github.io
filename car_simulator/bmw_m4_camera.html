@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>Three.js WebGL Car</title>
+	<title>Three.js M4 BMW</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<link type="text/css" rel="stylesheet" href="main.css">
@@ -45,7 +45,7 @@
 			▲
 		</div>
 		<div id="btnDriver" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #ABABABBB;border-radius:6px;text-align:center;font-size:14px;line-height: 30px;">
-			
+			Driver
 		</div>
 		<!-- <div id="btnLeft" style="display:inline-block;cursor:pointer;width:60px;height:32px;background-color: #0088FFFF;border-radius:6px;text-align:center;font-size:24px;line-height: 30px;">
 			◀
@@ -158,7 +158,7 @@
 		}
 
 		const setInsideView = () => {
-			camera.position.set(-4, 3, 5);
+			camera.position.set(0, 3, 5);
 		}
 
 		let btnReset = document.getElementById('btnReset');
@@ -172,7 +172,7 @@
 			resetView()
 		})
 		btnDriver.addEventListener("click",function(e){
-			// setInsideView()
+			setInsideView()
 		})
 
 		let isForwardPressed = false
@@ -356,7 +356,12 @@
 
 			//
 
-			camera = new THREE.PerspectiveCamera(33, window.innerWidth / window.innerHeight, 0.1, 100);
+			let camFOV = 33 // angle
+			let camAspectRatio = window.innerWidth / window.innerHeight
+			let canNEAR = 0.1
+			let camFAR = 100
+
+			camera = new THREE.PerspectiveCamera(camFOV, camAspectRatio, canNEAR, camFAR);
 			window.camera = camera
 			// camera.position.set( 4.25, 1.4, - 4.5 );
 			camera.position.set(initPositions.x, initPositions.y, initPositions.z);
@@ -379,6 +384,33 @@
 			grid.material.depthWrite = false;
 			grid.material.transparent = true;
 			scene.add(grid);
+
+			// cube
+			// const geometry = new THREE.BoxGeometry( 4, 4, 4 );
+			// const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			// const cube = new THREE.Mesh( geometry, material );
+			// scene.add( cube );
+
+			// circle
+			// const curve = new THREE.EllipseCurve(
+  			// 0.0, 0.0,            // Center x, y
+			// 5.0, 5.0,          // x radius, y radius
+			// 0.0, 2.0 * Math.PI,  // Start angle, stop angle
+			// false,            // Clockwise
+			// 90.0                // Rotation
+			// );
+			// const pts = curve.getSpacedPoints(256);
+			// const geo = new THREE.BufferGeometry().setFromPoints(pts);
+			// const mat = new THREE.LineBasicMaterial({ color: "yellow" });
+			// geo.rotateX(Math.PI/2)
+			// const circle = new THREE.LineLoop(geo, mat);
+			// scene.add(circle);
+
+			const geometry = new THREE.TorusGeometry( 5, 0.1, 2, 100 );
+			const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+			geometry.rotateX(Math.PI/2)
+			const torus = new THREE.Mesh( geometry, material );
+			scene.add( torus );
 
 			// materials
 
